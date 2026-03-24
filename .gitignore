@@ -1,0 +1,27 @@
+smart-port/
+docs/
+secrets/
+
+# Credentials (NEVER commit)
+.env
+.env.local
+.env.production
+
+# Dependencies
+frontend/node_modules/
+backend/vendor/
+
+# Build
+frontend/dist/
+
+# Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

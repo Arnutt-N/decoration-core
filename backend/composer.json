@@ -1,0 +1,7 @@
+{
+    "name": "moj/decoration-core",
+    "description": "ระบบเครื่องราชอิสริยาภรณ์ กระทรวงยุติธรรม - Backend API",
+    "require": {
+        "firebase/php-jwt": "^6.0"
+    }
+}
