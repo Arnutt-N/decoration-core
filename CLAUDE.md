@@ -16,7 +16,7 @@ cd frontend && npm install && npm run dev
 # Database init (first time, or after schema changes)
 ROOT_PASS=$(docker exec smartport-db printenv MYSQL_ROOT_PASSWORD)
 docker exec -i smartport-db mysql -uroot -p"$ROOT_PASS" --default-character-set=utf8mb4 -e "DROP DATABASE IF EXISTS decoration_core; CREATE DATABASE decoration_core CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-for f in 00-base-tables.sql 01-decoration-schema.sql 02-seed-data.sql 03-dev-seed.sql; do
+for f in 00-base-tables.sql 01-decoration-schema.sql 02-seed-data.sql 04-schema-enhancement.sql 03-dev-seed.sql; do
   docker exec -i smartport-db mysql -uroot -p"$ROOT_PASS" --default-character-set=utf8mb4 decoration_core < "database/$f"
 done
 

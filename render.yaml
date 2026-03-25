@@ -1,0 +1,52 @@
+services:
+  # Frontend — Vue 3 Static Site
+  - type: web
+    name: decoration-core
+    runtime: static
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    buildFilter:
+      paths:
+        - frontend/**
+        - render.yaml
+    envVars:
+      - key: VITE_API_URL
+        value: /api
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://decoration-backend.onrender.com/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # Backend — PHP 8.3 Docker
+  - type: web
+    name: decoration-backend
+    runtime: docker
+    branch: main
+    rootDir: backend
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+    envVars:
+      - key: MYSQL_HOST
+        sync: false
+      - key: MYSQL_PORT
+        value: "4000"
+      - key: MYSQL_DATABASE
+        value: decoration_core
+      - key: MYSQL_USER
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: MYSQL_SSL
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true

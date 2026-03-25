@@ -175,7 +175,7 @@ function handleDecorations(PDO $pdo, string $method, array $path): void {
                            r.thabanandorn_status,
                            r.created_at,
                            p.prefix, p.first_name, p.last_name,
-                           p.rank_name, p.current_level_code,
+                           p.rank_name, p.current_level_code, p.birth_date,
                            p.position_type, p.position_level_name,
                            p.salary_5y, p.position_allowance,
                            p.position_level_start_date, p.hire_date,
