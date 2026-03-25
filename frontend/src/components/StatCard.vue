@@ -1,25 +1,50 @@
 <template>
-  <div class="card hover:shadow-md transition-shadow">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-gray-500 mb-1">{{ label }}</p>
-        <p class="text-2xl font-bold text-gray-900">{{ value }}</p>
-        <p v-if="subtitle" class="text-xs text-gray-400 mt-1">{{ subtitle }}</p>
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <div class="rounded-lg p-3" :class="iconBgClass">
+          <component :is="icon" class="w-6 h-6" :class="iconClass" />
+        </div>
       </div>
-      <div :class="['w-12 h-12 rounded-xl flex items-center justify-center', iconBg]">
-        <component :is="icon" class="w-6 h-6" :class="iconColor" />
+      <div class="ml-4 flex-1">
+        <p class="text-sm font-medium text-gray-600">{{ label }}</p>
+        <p class="text-2xl font-semibold tabular-nums text-gray-900 mt-1">{{ value }}</p>
+        <p v-if="change" class="text-sm mt-1" :class="changeClass">
+          {{ change }} จากเดือนที่แล้ว
+        </p>
+        <div v-if="sparkline" class="flex items-end gap-0.5 mt-2 h-6">
+          <div
+            v-for="(val, i) in sparklineData"
+            :key="i"
+            class="flex-1 rounded-sm transition-all duration-300"
+            :class="sparklineColor"
+            :style="{ height: `${val}%` }"
+          ></div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   label: String,
   value: [String, Number],
-  subtitle: String,
-  icon: [Object, Function],
-  iconBg: { type: String, default: 'bg-primary-100' },
-  iconColor: { type: String, default: 'text-primary-600' },
+  icon: Object,
+  change: { type: String, default: '' },
+  iconBgClass: { type: String, default: 'bg-blue-50' },
+  iconClass: { type: String, default: 'text-blue-600' },
+  sparkline: { type: Boolean, default: false },
+  sparklineColor: { type: String, default: 'bg-blue-200' },
+})
+
+const sparklineData = computed(() => [40, 55, 35, 70, 45, 80, 60, 90])
+
+const changeClass = computed(() => {
+  if (props.change.startsWith('+')) return 'text-green-600'
+  if (props.change.startsWith('-')) return 'text-red-600'
+  return 'text-gray-600'
 })
 </script>

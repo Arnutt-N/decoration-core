@@ -77,6 +77,11 @@ const routes = [
         component: () => import('@/pages/chakrabardi/ChakrabardiListPage.vue'),
       },
       {
+        path: 'chakrabardi/detail/:personnelId',
+        name: 'chakrabardi-detail',
+        component: () => import('@/pages/chakrabardi/ChakrabardiDetailPage.vue'),
+      },
+      {
         path: 'chakrabardi/new',
         name: 'chakrabardi-new',
         component: () => import('@/pages/chakrabardi/ChakrabardiRequestPage.vue'),

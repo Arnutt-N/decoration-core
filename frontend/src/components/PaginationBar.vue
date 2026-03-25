@@ -1,17 +1,34 @@
 <template>
-  <div v-if="totalPages > 1" class="flex items-center justify-between mt-4">
-    <p class="text-sm text-gray-500">แสดง {{ from }}-{{ to }} จาก {{ total }} รายการ</p>
-    <div class="flex gap-1">
-      <button @click="$emit('change', page - 1)" :disabled="page <= 1"
-              class="px-3 py-1.5 text-sm rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-40">
+  <div class="flex items-center justify-between mt-4 text-sm text-gray-600">
+    <span>แสดง {{ from }} ถึง {{ to }} จาก {{ total }} รายการ</span>
+    <div class="flex items-center gap-1">
+      <button
+        :disabled="currentPage === 1"
+        class="px-3 py-1 text-sm rounded-lg bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        @click="goToPage(currentPage - 1)"
+      >
         ก่อนหน้า
       </button>
-      <button v-for="p in visiblePages" :key="p" @click="$emit('change', p)"
-              :class="['px-3 py-1.5 text-sm rounded border', p === page ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-300 hover:bg-gray-100']">
-        {{ p }}
-      </button>
-      <button @click="$emit('change', page + 1)" :disabled="page >= totalPages"
-              class="px-3 py-1.5 text-sm rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-40">
+
+      <template v-for="page in visiblePages" :key="page">
+        <span v-if="page === '...'" class="px-2 py-1 text-gray-400">...</span>
+        <button
+          v-else
+          class="px-3 py-1 text-sm rounded-lg"
+          :class="page === currentPage
+            ? 'bg-blue-500 text-white'
+            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'"
+          @click="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </template>
+
+      <button
+        :disabled="currentPage === totalPages"
+        class="px-3 py-1 text-sm rounded-lg bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        @click="goToPage(currentPage + 1)"
+      >
         ถัดไป
       </button>
     </div>
@@ -22,22 +39,43 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  page: Number,
-  perPage: { type: Number, default: 20 },
-  total: Number,
+  total: { type: Number, required: true },
+  limit: { type: Number, required: true },
+  offset: { type: Number, required: true },
 })
 
-defineEmits(['change'])
+const emit = defineEmits(['update:offset'])
 
-const totalPages = computed(() => Math.ceil(props.total / props.perPage))
-const from = computed(() => (props.page - 1) * props.perPage + 1)
-const to = computed(() => Math.min(props.page * props.perPage, props.total))
+const from = computed(() => props.total === 0 ? 0 : props.offset + 1)
+const to = computed(() => Math.min(props.offset + props.limit, props.total))
+const currentPage = computed(() => Math.floor(props.offset / props.limit) + 1)
+const totalPages = computed(() => Math.ceil(props.total / props.limit) || 1)
 
 const visiblePages = computed(() => {
   const pages = []
-  const start = Math.max(1, props.page - 2)
-  const end = Math.min(totalPages.value, props.page + 2)
+  const current = currentPage.value
+  const last = totalPages.value
+
+  if (last <= 5) {
+    for (let i = 1; i <= last; i++) pages.push(i)
+    return pages
+  }
+
+  pages.push(1)
+  if (current > 3) pages.push('...')
+
+  const start = Math.max(2, current - 1)
+  const end = Math.min(last - 1, current + 1)
   for (let i = start; i <= end; i++) pages.push(i)
+
+  if (current < last - 2) pages.push('...')
+  pages.push(last)
+
   return pages
 })
+
+function goToPage(page) {
+  if (page < 1 || page > totalPages.value) return
+  emit('update:offset', (page - 1) * props.limit)
+}
 </script>

@@ -65,7 +65,7 @@
             </td>
             <td class="px-4 py-3 text-sm text-gray-700">{{ file.category }}</td>
             <td class="px-4 py-3 text-sm text-gray-500">{{ file.description || '-' }}</td>
-            <td class="px-4 py-3 text-sm text-gray-500">{{ file.created_at }}</td>
+            <td class="px-4 py-3 text-sm text-gray-500">{{ file.created_at_thai || file.created_at }}</td>
             <td class="px-4 py-3">
               <div class="flex gap-2">
                 <a :href="`/api/files/${file.file_id}/download`" target="_blank"

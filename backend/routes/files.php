@@ -32,6 +32,10 @@ function handleFiles(PDO $pdo, string $method, array $path): void {
         $countSql = "SELECT COUNT(*) FROM file_attachments $where";
         $dataSql = "SELECT * FROM file_attachments $where ORDER BY created_at DESC";
         $result = paginate($pdo, $countSql, $dataSql, $params, $page);
+        foreach ($result['data'] as &$row) {
+            appendThaiDates($row, ['created_at']);
+        }
+        unset($row);
         jsonResponse(['success' => true] + $result);
 
     } elseif ($method === 'POST') {
