@@ -23,7 +23,7 @@
           </div>
           <div class="flex items-center gap-3">
             <StatusBadge :status="item.status" />
-            <span class="text-sm text-gray-400">{{ item.created_at }}</span>
+            <span class="text-sm text-gray-400">{{ item.created_at_thai || item.created_at }}</span>
           </div>
         </div>
 

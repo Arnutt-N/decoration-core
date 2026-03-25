@@ -60,6 +60,10 @@ function handleDirek(PDO $pdo, string $method, array $path): void {
                     $countSql = "SELECT COUNT(*) FROM direk_persons $where";
                     $dataSql = "SELECT * FROM direk_persons $where ORDER BY first_name, last_name";
                     $result = paginate($pdo, $countSql, $dataSql, $params, $page);
+                    foreach ($result['data'] as &$row) {
+                        appendThaiDates($row, ['birth_date', 'volunteer_since', 'criminal_check_date', 'bankruptcy_check_date', 'created_at']);
+                    }
+                    unset($row);
                     jsonResponse(['success' => true] + $result);
                 }
 
@@ -188,6 +192,10 @@ function handleDirek(PDO $pdo, string $method, array $path): void {
                     ORDER BY r.created_at DESC
                 ";
                 $result = paginate($pdo, $countSql, $dataSql, $params, $page);
+                foreach ($result['data'] as &$row) {
+                    appendThaiDates($row, ['created_at', 'committee_date']);
+                }
+                unset($row);
                 jsonResponse(['success' => true] + $result);
 
             } elseif ($method === 'POST') {

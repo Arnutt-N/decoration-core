@@ -1,33 +1,21 @@
 @import "tailwindcss";
 
-/* Theme — สีม่วง-ทอง สำหรับเครื่องราชอิสริยาภรณ์ */
+/* Theme — same design system as smart-port */
 @theme {
-  /* Primary (purple/violet - เครื่องราชฯ) */
-  --color-primary-50: #faf5ff;
-  --color-primary-100: #f3e8ff;
-  --color-primary-200: #e9d5ff;
-  --color-primary-300: #d8b4fe;
-  --color-primary-400: #c084fc;
-  --color-primary-500: #a855f7;
-  --color-primary-600: #9333ea;
-  --color-primary-700: #7c3aed;
-  --color-primary-800: #6b21a8;
-  --color-primary-900: #581c87;
-  --color-primary-950: #3b0764;
+  /* Primary colors (sky/cyan palette) */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  --color-primary-950: #082f49;
 
-  /* Accent (amber/gold - ทอง) */
-  --color-accent-50: #fffbeb;
-  --color-accent-100: #fef3c7;
-  --color-accent-200: #fde68a;
-  --color-accent-300: #fcd34d;
-  --color-accent-400: #fbbf24;
-  --color-accent-500: #f59e0b;
-  --color-accent-600: #d97706;
-  --color-accent-700: #b45309;
-  --color-accent-800: #92400e;
-  --color-accent-900: #78350f;
-
-  /* Government (slate) */
+  /* Government colors (slate palette) */
   --color-government-50: #f8fafc;
   --color-government-100: #f1f5f9;
   --color-government-200: #e2e8f0;
@@ -39,67 +27,96 @@
   --color-government-800: #1e293b;
   --color-government-900: #0f172a;
 
+  /* Fonts */
   --font-thai: 'Noto Sans Thai', system-ui, sans-serif;
+
+  /* Custom spacing */
   --spacing-18: 4.5rem;
   --spacing-88: 22rem;
 
+  /* Animations */
   --animate-fade-in: fade-in 0.5s ease-in-out;
   --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-bounce-subtle: bounce-subtle 1s ease-in-out infinite;
 }
 
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-:root { --ring: #7c3aed; --border: #e5e7eb; }
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
 
-body { background-color: #f8fafc; }
+:root {
+  --ring: #3b82f6;
+  --border: #e5e7eb;
+}
+
+.semi-dark {
+  --background: #1f2937;
+  --foreground: #e5e7eb;
+  --accent-color: #3b82f6;
+  --border: #4b5563;
+  --ring: #3b82f6;
+}
+
+.light {
+  --background: #ffffff;
+  --foreground: #000000;
+  --accent-color: #3b82f6;
+  --border: #e5e7eb;
+  --ring: #3b82f6;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
 
 @layer base {
-  body { font-feature-settings: "rlig" 1, "calt" 1; }
-  html { scroll-behavior: smooth; }
-}
-
-@utility btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: color 0.15s, background-color 0.15s;
-  &:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-primary-500); }
-  &:disabled { opacity: 0.5; pointer-events: none; }
-}
-@utility btn-primary {
-  @apply btn bg-primary-600 text-white;
-  &:hover { background-color: var(--color-primary-700); }
-  &:active { background-color: var(--color-primary-800); }
-}
-@utility btn-secondary {
-  @apply btn bg-government-200 text-government-800;
-  &:hover { background-color: var(--color-government-300); }
-}
-@utility btn-outline {
-  @apply btn border border-primary-300 text-primary-700;
-  &:hover { background-color: var(--color-primary-50); }
-}
-@utility btn-accent {
-  @apply btn bg-accent-500 text-white;
-  &:hover { background-color: var(--color-accent-600); }
+  body {
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none bg-government-200 text-government-800 hover:bg-government-300;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-primary-300 text-primary-600 hover:bg-primary-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none hover:bg-gray-100 text-gray-700;
+  }
   .card {
     @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }
+  .card-header {
+    @apply border-b border-gray-200 pb-4 mb-4;
+  }
   .input {
     @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+  }
+  .input-error {
+    @apply border-red-300 focus:ring-red-500 focus:border-red-500;
   }
   .label {
     @apply block text-sm font-medium text-gray-700 mb-1;
@@ -107,15 +124,44 @@ body { background-color: #f8fafc; }
   .sidebar {
     @apply w-64 bg-white shadow-sm border-r border-gray-200 h-screen fixed left-0 top-0 z-30 transform transition-transform duration-300;
   }
+  .sidebar-hidden {
+    @apply -translate-x-full;
+  }
 }
 
-/* Scrollbar */
-* { scrollbar-width: thin; scrollbar-color: transparent transparent; }
-*:hover { scrollbar-color: #d1d5db transparent; }
+@layer utilities {
+  .glass-effect {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+  .elevation-1 {
+    @apply shadow-sm hover:shadow transition-shadow duration-200;
+  }
+  .elevation-2 {
+    @apply shadow hover:shadow-md transition-shadow duration-200;
+  }
+  .elevation-3 {
+    @apply shadow-md hover:shadow-lg transition-shadow duration-200;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: #d1d5db transparent;
+}
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: transparent; border-radius: 9999px; }
 *:hover::-webkit-scrollbar-thumb { background: #d1d5db; }
+*:hover::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+.sidebar-scroll:hover { scrollbar-color: #4b5563 transparent; }
+.sidebar-scroll:hover::-webkit-scrollbar-thumb { background: #4b5563; }
+.sidebar-scroll:hover::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
 @media print {
   .no-print { display: none !important; }

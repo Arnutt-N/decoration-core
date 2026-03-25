@@ -60,7 +60,7 @@
             <td class="px-4 py-3 text-sm text-gray-700">{{ item.level_name }}</td>
             <td class="px-4 py-3 text-sm text-gray-700">{{ item.request_type }}</td>
             <td class="px-4 py-3"><StatusBadge :status="item.status" /></td>
-            <td class="px-4 py-3 text-sm text-gray-500">{{ item.created_at }}</td>
+            <td class="px-4 py-3 text-sm text-gray-500">{{ item.created_at_thai || item.created_at }}</td>
           </tr>
         </tbody>
       </table>

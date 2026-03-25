@@ -1,0 +1,37 @@
+# ============================================================================
+# Decoration Core — Docker Compose for Local Development
+# ใช้ร่วมกับ smart-port Docker (ใช้ MySQL container เดียวกัน)
+# Usage:  docker compose -f docker-compose.dev.yaml up -d
+# ============================================================================
+
+services:
+  # =============================================
+  # PHP Backend (Apache + mod_rewrite)
+  # mount source code = hot reload PHP ทันที
+  # =============================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: decoration-backend
+    ports:
+      - "8002:80"
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      MYSQL_HOST: smartport-db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: decoration_core
+      MYSQL_USER: root
+      MYSQL_PASSWORD: "6)AdHINVW%*#RdJ-YV-X"
+      MYSQL_SSL: "false"
+      JWT_SECRET: dev_jwt_secret_2569
+    networks:
+      - smartport-net
+    restart: unless-stopped
+
+# ใช้ network ของ smart-port ที่มีอยู่แล้ว
+networks:
+  smartport-net:
+    external: true
+    name: smart-port_smartport-net

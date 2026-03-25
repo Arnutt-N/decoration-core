@@ -50,17 +50,21 @@ function getLevelName(string $code): string {
  * คำนวณอายุราชการ (ปี เดือน วัน) จากวันบรรจุ
  */
 function calculateServiceYears(string $startDate, ?string $endDate = null): array {
-    $start = new DateTime($startDate);
-    $end = $endDate ? new DateTime($endDate) : new DateTime();
-    $diff = $start->diff($end);
+    try {
+        $start = new DateTime($startDate);
+        $end = $endDate ? new DateTime($endDate) : new DateTime();
+        $diff = $start->diff($end);
 
-    return [
-        'years' => $diff->y,
-        'months' => $diff->m,
-        'days' => $diff->d,
-        'total_years' => round($diff->y + $diff->m / 12 + $diff->d / 365, 1),
-        'text' => "{$diff->y} ปี {$diff->m} เดือน {$diff->d} วัน"
-    ];
+        return [
+            'years' => $diff->y,
+            'months' => $diff->m,
+            'days' => $diff->d,
+            'total_years' => round($diff->y + $diff->m / 12 + $diff->d / 365, 1),
+            'text' => "{$diff->y} ปี {$diff->m} เดือน {$diff->d} วัน"
+        ];
+    } catch (Exception $e) {
+        return ['years' => 0, 'months' => 0, 'days' => 0, 'total_years' => 0, 'text' => '-'];
+    }
 }
 
 /**
@@ -77,7 +81,53 @@ function jsonResponse($data, int $statusCode = 200): void {
  */
 function getJsonInput(): array {
     $raw = file_get_contents('php://input');
-    return json_decode($raw, true) ?? [];
+    $data = json_decode($raw, true);
+    if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+        jsonResponse(['error' => 'Invalid JSON input'], 400);
+    }
+    return $data ?? [];
+}
+
+/**
+ * คำนวณวันที่ครบ 25 ปีราชการ
+ */
+function calculateCompletion25yDate(string $hireDate): ?string {
+    try {
+        $hire = new DateTime($hireDate);
+        $hire->modify('+25 years');
+        return $hire->format('Y-m-d');
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+/**
+ * คำนวณวันเกษียณอายุราชการ (30 ก.ย. ของปีงบประมาณที่อายุครบ 60)
+ */
+function calculateRetirementDate(string $birthDate): ?string {
+    try {
+        $birth = new DateTime($birthDate);
+        $turnsSixtyYear = (int) $birth->format('Y') + 60;
+        $birthMonth = (int) $birth->format('n');
+        // ปีงบประมาณ: ถ้าเกิด ต.ค.-ก.ย. → เกษียณ 30 ก.ย. ของปีที่อายุครบ 60
+        // ถ้าเกิดหลัง 1 ต.ค. ต้องรอปีงบถัดไป
+        $fiscalYear = $birthMonth >= 10 ? $turnsSixtyYear + 1 : $turnsSixtyYear;
+        return "$fiscalYear-09-30";
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+/**
+ * เพิ่ม _thai suffix fields สำหรับทุก date column ใน row
+ * ใช้รูปแบบเดียวกับ smart-port: "1 ม.ค. 2567"
+ */
+function appendThaiDates(array &$row, array $dateFields): void {
+    foreach ($dateFields as $field) {
+        if (isset($row[$field])) {
+            $row[$field . '_thai'] = formatThaiDate($row[$field]);
+        }
+    }
 }
 
 /**
@@ -91,9 +141,14 @@ function paginate(PDO $pdo, string $countSql, string $dataSql, array $params = [
 
     // ดึง data
     $offset = ($page - 1) * $perPage;
-    $dataSql .= " LIMIT $perPage OFFSET $offset";
+    $dataSql .= " LIMIT :_limit OFFSET :_offset";
     $dataStmt = $pdo->prepare($dataSql);
-    $dataStmt->execute($params);
+    foreach ($params as $i => $v) {
+        $dataStmt->bindValue($i + 1, $v);
+    }
+    $dataStmt->bindValue(':_limit', (int) $perPage, PDO::PARAM_INT);
+    $dataStmt->bindValue(':_offset', (int) $offset, PDO::PARAM_INT);
+    $dataStmt->execute();
     $rows = $dataStmt->fetchAll(PDO::FETCH_ASSOC);
 
     return [

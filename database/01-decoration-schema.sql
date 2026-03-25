@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS decoration_changpuak_levels (
     level_name      VARCHAR(100) NOT NULL COMMENT 'ชื่อชั้นตรา เช่น มหาปรมาภรณ์ช้างเผือก',
     abbreviation    VARCHAR(20) NOT NULL COMMENT 'อักษรย่อ เช่น ม.ป.ช.',
     level_category  VARCHAR(50) NOT NULL COMMENT 'สายสะพาย / ต่ำกว่าสายสะพาย',
-    decoration_type VARCHAR(20) NOT NULL COMMENT 'ช้างเผือก / มงกุฎไทย',
+    decoration_type VARCHAR(50) NOT NULL COMMENT 'ช้างเผือก / มงกุฎไทย',
     sort_order      INT NOT NULL COMMENT 'ลำดับชั้น 1=สูงสุด',
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS decoration_changpuak_requests (
     round_id        BIGINT COMMENT 'FK → request_rounds.round_id',
     current_level_abbr VARCHAR(20) COMMENT 'ชั้นตราปัจจุบัน',
     requested_level_abbr VARCHAR(20) NOT NULL COMMENT 'ชั้นที่ขอ',
-    decoration_type VARCHAR(20) NOT NULL COMMENT 'ช้างเผือก / มงกุฎไทย',
+    decoration_type VARCHAR(50) NOT NULL COMMENT 'ช้างเผือก / มงกุฎไทย',
     pos_level       VARCHAR(10) COMMENT 'ระดับตำแหน่งขณะขอ',
     salary          DECIMAL(10,2) COMMENT 'เงินเดือนขณะขอ',
     years_in_level  DECIMAL(4,1) COMMENT 'ปีในระดับ',
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS decoration_changpuak_history (
     award_id        BIGINT PRIMARY KEY AUTO_INCREMENT,
     personnel_id    BIGINT NOT NULL,
     level_abbr      VARCHAR(20) NOT NULL COMMENT 'ชั้นที่ได้รับ',
-    decoration_type VARCHAR(20) NOT NULL COMMENT 'ช้างเผือก / มงกุฎไทย',
+    decoration_type VARCHAR(50) NOT NULL COMMENT 'ช้างเผือก / มงกุฎไทย',
     award_date      DATE COMMENT 'วันที่ได้รับพระราชทาน',
     award_year      INT COMMENT 'ปี พ.ศ.',
     gazette_ref     VARCHAR(200) COMMENT 'เลขที่ราชกิจจานุเบกษา',
