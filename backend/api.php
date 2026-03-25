@@ -10,7 +10,8 @@ header('Content-Type: application/json; charset=UTF-8');
 $allowedOrigins = [
     'http://localhost:5174',
     'http://localhost:8081',
-    'https://decoration-core.onrender.com'
+    'https://decoration-core.onrender.com',
+    'https://decorationcore-backend.onrender.com',
 ];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowedOrigins)) {
